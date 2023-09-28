@@ -37,10 +37,10 @@
         height: 100px;
         /* border: 2px solid #948e8e; */
         /* background: rgba(143, 149, 143, 0.7); */
-        transform: rotate(135deg);
+        transform: rotate(0deg);
         position: relative;
         display: flex;
-        justify-content: flex-start;
+        justify-content: flex-end;
         align-items: flex-start;
       }
 
@@ -48,10 +48,10 @@
         margin: 0;
         padding: 0;
         width: 50%;
-        height: 50%;
+        height: 100%;
         border: 2px solid #948e8e;
         background: rgba(17, 129, 17, 0.7);
-        border-radius: 100% 0 0 0; /* Aplicar un radio solo al primer cuadrante */
+        border-radius: 100% 0% 0% 100%; /* Aplicar un radio solo al primer cuadrante */
         position: absolute;
       }
     </style>
@@ -85,15 +85,18 @@
         // Obtén la orientación del usuario en grados.
         userOrientation = event.alpha || 0;
 
+        // Obtén la orientación del usuario en grados.
         // Asegúrate de que la orientación esté en el rango 0-360 grados.
         userOrientation = (userOrientation + 360) % 360;
 
+        // Invierte la orientación para compensar la dirección del giroscopio.
+        userOrientation = (360 - userOrientation) % 360;
         // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
 
-        const transformValue = `rotate(${userOrientation - 225}deg)`;
-
+        // userOrientation = -270;
+        const transformValue = `rotate(${userOrientation * -1}deg)`;
         // Antes de actualizar el icono, crea un nuevo icono con la transformación actualizada.
         const updatedArrowIcon = L.divIcon({
           className: "custom-marker-icon",
