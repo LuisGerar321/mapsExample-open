@@ -18,14 +18,13 @@
   </head>
   <body>
     <script>
-      alert("hiii");
       const isADifferentPos = (
         prevLatitude,
         prevLongitude,
         latitude,
         longitude
       ) => {
-        return prevLatitude === latitude && prevLongitude === longitude;
+        return prevLatitude !== latitude || prevLongitude !== longitude;
       };
 
       let map;
@@ -33,19 +32,14 @@
       let prevLongitude;
       let latitude;
       let longitude;
-      let marker; // Mover la definición del marcador aquí
+      let marker;
 
       function geoFindMe() {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-          const updateInterval = 100; // Actualizar cada 3 segundos
-          setInterval(() => {
-            navigator.geolocation.getCurrentPosition(showPosition);
-          }, updateInterval);
+          navigator.geolocation.watchPosition(showPosition);
           function showPosition(position) {
             latitude = position.coords.latitude;
             longitude = position.coords.longitude;
-            console.log(latitude, longitude);
 
             if (!map) {
               map = L.map("map").setView([latitude, longitude], 19);
@@ -57,19 +51,28 @@
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 }
               ).addTo(map);
-            }
 
-            // Crear o actualizar el marcador
-            if (!marker) {
               marker = L.marker([latitude, longitude]).addTo(map);
             } else {
-              marker.setLatLng([latitude, longitude]);
+              if (
+                isADifferentPos(
+                  prevLatitude,
+                  prevLongitude,
+                  latitude,
+                  longitude
+                )
+              ) {
+                marker.setLatLng([latitude, longitude]);
+                map.setView([latitude, longitude, map.getZoom()]);
+              }
             }
 
-            map.setView([latitude, longitude, map.getZoom()]);
+            prevLatitude = latitude;
+            prevLongitude = longitude;
           }
         }
       }
+
       document.addEventListener("DOMContentLoaded", function () {
         geoFindMe();
       });
