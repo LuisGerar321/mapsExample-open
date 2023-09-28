@@ -41,17 +41,17 @@
         position: relative;
         display: flex;
         justify-content: flex-end;
-        align-items: flex-start;
+        align-items: flex-end;
       }
 
       .user-view {
         margin: 0;
         padding: 0;
-        width: 50%;
-        height: 100%;
+        width: 100%;
+        height: 50%;
         border: 2px solid #948e8e;
         background: rgba(17, 129, 17, 0.7);
-        border-radius: 100% 0% 0% 100%; /* Aplicar un radio solo al primer cuadrante */
+        border-radius: 100% 100% 0% 0%; /* Aplicar un radio solo al primer cuadrante */
         position: absolute;
       }
     </style>
@@ -96,7 +96,7 @@
           userOrientation.toFixed(2);
 
         // userOrientation = -270;
-        const transformValue = `rotate(${userOrientation}deg)`;
+        const transformValue = `rotate(${userOrientation * -1}deg)`;
         // Antes de actualizar el icono, crea un nuevo icono con la transformación actualizada.
         const updatedArrowIcon = L.divIcon({
           className: "custom-marker-icon",
