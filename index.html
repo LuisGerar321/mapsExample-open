@@ -50,6 +50,11 @@
         border-left: 25px solid transparent;
         border-right: 25px solid transparent;
         border-bottom: 50px solid rgba(212, 28, 28, 0.7); /* Cambia el color de fondo y ajusta el tamaño según sea necesario */
+        background-image: linear-gradient(
+          to top,
+          rgba(255, 14, 14, 0.668),
+          transparent
+        );
         /* transform-origin: center bottom;
         position: relative;
         position: absolute; */
@@ -101,7 +106,7 @@
         const updatedArrowIcon = L.divIcon({
           className: "custom-marker-icon",
           html: `<div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`,
-          iconAnchor: [25, 25],
+          iconAnchor: [25, 0],
         });
 
         // Establece el nuevo icono en el marcador.
@@ -130,7 +135,7 @@
           arrowIcon = L.divIcon({
             className: "custom-marker-icon",
             html: "<div class = user-box > <div class = user-view></div>   </div>", // Reemplaza 'flecha.png' con la ruta de tu imagen de flecha
-            iconAnchor: [25, 25],
+            iconAnchor: [25, 0],
           });
           marker = L.marker([latitude, longitude], {
             icon: arrowIcon,
