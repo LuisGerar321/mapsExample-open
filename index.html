@@ -18,6 +18,7 @@
   </head>
   <body>
     <script>
+      alert("hiii");
       const isADifferentPos = (
         prevLatitude,
         prevLongitude,
@@ -42,9 +43,6 @@
             navigator.geolocation.getCurrentPosition(showPosition);
           }, updateInterval);
           function showPosition(position) {
-            prevLatitude = latitude;
-            prevLongitude = longitude;
-
             latitude = position.coords.latitude;
             longitude = position.coords.longitude;
             console.log(latitude, longitude);
