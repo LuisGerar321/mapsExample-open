@@ -37,7 +37,7 @@
       function geoFindMe() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);
-          const updateInterval = 3000; // Actualizar cada 3 segundos
+          const updateInterval = 100; // Actualizar cada 3 segundos
           setInterval(() => {
             navigator.geolocation.getCurrentPosition(showPosition);
           }, updateInterval);
