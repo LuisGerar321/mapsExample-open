@@ -15,38 +15,73 @@
     ></script>
   </head>
   <body>
-    <div id="map" style="height: 100vh; width: 100vw"></div>
+    <div id="map" style="height: 50vh; width: 100vw"></div>
+    <div>
+      <h2>Información de Ubicación y Orientación:</h2>
+      <p>Latitud: <span id="lat-span">---</span></p>
+      <p>Longitud: <span id="long-span">---</span></p>
+      <p>Orientación: <span id="orientation-span">---</span> grados</p>
+    </div>
     <script>
       let map;
       let marker;
+      let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
 
       function geoFindMe() {
         if (navigator.geolocation) {
           navigator.geolocation.watchPosition(showPosition);
-          function showPosition(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            if (!map) {
-              map = L.map("map").setView([latitude, longitude], 19);
-              L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-                  maxZoom: 20.5,
-                  attribution:
-                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                }
-              ).addTo(map);
-            }
-
-            // Crear o actualizar el marcador
-            if (!marker) {
-              marker = L.marker([latitude, longitude]).addTo(map);
-            } else {
-              marker.setLatLng([latitude, longitude]);
-            }
-          }
         }
+
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener("deviceorientation", handleOrientation);
+        }
+      }
+
+      function handleOrientation(event) {
+        // Obtén la orientación del usuario en grados.
+        userOrientation = event.alpha || 0;
+
+        // Asegúrate de que la orientación esté en el rango 0-360 grados.
+        userOrientation = (userOrientation + 360) % 360;
+
+        // Actualiza la orientación en el span correspondiente.
+        document.getElementById("orientation-span").textContent =
+          userOrientation.toFixed(2);
+      }
+
+      function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Actualiza la latitud y longitud en los spans correspondientes.
+        document.getElementById("lat-span").textContent = latitude.toFixed(6);
+        document.getElementById("long-span").textContent = longitude.toFixed(6);
+
+        if (!map) {
+          map = L.map("map").setView([latitude, longitude], 19);
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 20.5,
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(map);
+        }
+
+        // Crear o actualizar el marcador
+        if (!marker) {
+          marker = L.marker([latitude, longitude]).addTo(map);
+        } else {
+          marker.setLatLng([latitude, longitude]);
+        }
+
+        // Rotar el icono del marcador en función de la orientación del usuario
+        if (marker) {
+          const icon = marker.getIcon();
+          icon.options.rotationAngle = userOrientation;
+          marker.setIcon(icon);
+        }
+
+        // Centrar el mapa en la nueva ubicación del marcador
+        map.setView([latitude, longitude]);
       }
 
       document.addEventListener("DOMContentLoaded", function () {
