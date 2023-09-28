@@ -90,7 +90,7 @@
         userOrientation = (userOrientation + 360) % 360;
 
         // Invierte la orientación para compensar la dirección del giroscopio.
-        userOrientation = (360 - userOrientation) % 360;
+        userOrientation = userOrientation % 360;
         // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
