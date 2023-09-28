@@ -55,8 +55,8 @@
         const longitude = position.coords.longitude;
         console.log("lat: ", latitude, "long: ", longitude);
         // Actualiza la latitud y longitud en los spans correspondientes.
-        document.getElementById("lat-span").textContent = latitude.toFixed(6);
-        document.getElementById("long-span").textContent = longitude.toFixed(6);
+        document.getElementById("lat-span").textContent = latitude;
+        document.getElementById("long-span").textContent = longitude;
 
         if (!map) {
           map = L.map("map").setView([latitude, longitude], 19);
