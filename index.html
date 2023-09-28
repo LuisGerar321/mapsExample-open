@@ -80,7 +80,6 @@
       if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", handleOrientation);
       }
-      // }
 
       function handleOrientation(event) {
         // Obtén la orientación del usuario en grados.
@@ -95,11 +94,15 @@
 
         const transformValue = `rotate(${userOrientation - 135}deg)`;
 
-        // Actualiza el estilo de arrowIcon.html con la nueva transformación.
-        if (arrowIcon) {
-          arrowIcon.options.html = `<div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`;
-          marker.update();
-        }
+        // Antes de actualizar el icono, crea un nuevo icono con la transformación actualizada.
+        const updatedArrowIcon = L.divIcon({
+          className: "custom-marker-icon",
+          html: `<div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`,
+          iconAnchor: [50, 50],
+        });
+
+        // Establece el nuevo icono en el marcador.
+        marker.setIcon(updatedArrowIcon);
       }
 
       function showPosition(position) {
@@ -133,7 +136,8 @@
           marker2 = L.marker([latitude, longitude], {}).addTo(map);
         } else {
           marker.setLatLng([latitude, longitude]);
-          marker.update();
+
+          // Actualiza la posición del marker2.
           marker2.setLatLng([latitude, longitude]);
         }
 
