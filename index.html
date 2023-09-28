@@ -27,15 +27,15 @@
       let marker;
       let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
 
-      function geoFindMe() {
-        if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
-        }
-
-        if (window.DeviceOrientationEvent) {
-          window.addEventListener("deviceorientation", handleOrientation);
-        }
+      // function geoFindMe() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
       }
+
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", handleOrientation);
+      }
+      // }
 
       function handleOrientation(event) {
         // Obtén la orientación del usuario en grados.
@@ -84,9 +84,9 @@
         map.setView([latitude, longitude]);
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        geoFindMe();
-      });
+      // document.addEventListener("DOMContentLoaded", function () {
+      //   geoFindMe();
+      // });
     </script>
   </body>
 </html>
