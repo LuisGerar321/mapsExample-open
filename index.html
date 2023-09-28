@@ -13,33 +13,19 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
-
-    <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
   <body>
+    <div id="map" style="height: 100vh; width: 100vw"></div>
     <script>
-      const isADifferentPos = (
-        prevLatitude,
-        prevLongitude,
-        latitude,
-        longitude
-      ) => {
-        return prevLatitude !== latitude || prevLongitude !== longitude;
-      };
-
       let map;
-      let prevLatitude;
-      let prevLongitude;
-      let latitude;
-      let longitude;
       let marker;
 
       function geoFindMe() {
         if (navigator.geolocation) {
           navigator.geolocation.watchPosition(showPosition);
           function showPosition(position) {
-            latitude = position.coords.latitude;
-            longitude = position.coords.longitude;
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
             if (!map) {
               map = L.map("map").setView([latitude, longitude], 19);
@@ -51,24 +37,14 @@
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 }
               ).addTo(map);
-
-              marker = L.marker([latitude, longitude]).addTo(map);
-            } else {
-              if (
-                isADifferentPos(
-                  prevLatitude,
-                  prevLongitude,
-                  latitude,
-                  longitude
-                )
-              ) {
-                marker.setLatLng([latitude, longitude]);
-                map.setView([latitude, longitude, map.getZoom()]);
-              }
             }
 
-            prevLatitude = latitude;
-            prevLongitude = longitude;
+            // Crear o actualizar el marcador
+            if (!marker) {
+              marker = L.marker([latitude, longitude]).addTo(map);
+            } else {
+              marker.setLatLng([latitude, longitude]);
+            }
           }
         }
       }
@@ -77,6 +53,5 @@
         geoFindMe();
       });
     </script>
-    <div id="map" style="height: 100vh; width: 100vw"></div>
   </body>
 </html>
