@@ -27,9 +27,10 @@
       let marker;
       let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
 
-      // function geoFindMe() {
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(showPosition);
+      function geoFindMe() {
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(showPosition);
+        }
       }
 
       if (window.DeviceOrientationEvent) {
@@ -52,7 +53,7 @@
       function showPosition(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-
+        console.log("lat: ", latitude, "long: ", longitude);
         // Actualiza la latitud y longitud en los spans correspondientes.
         document.getElementById("lat-span").textContent = latitude.toFixed(6);
         document.getElementById("long-span").textContent = longitude.toFixed(6);
@@ -84,9 +85,9 @@
         map.setView([latitude, longitude]);
       }
 
-      // document.addEventListener("DOMContentLoaded", function () {
-      //   geoFindMe();
-      // });
+      document.addEventListener("DOMContentLoaded", function () {
+        geoFindMe();
+      });
     </script>
   </body>
 </html>
