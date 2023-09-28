@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <script>
+      const isADifferentPos = (
+        prevLatitude,
+        prevLongitude,
+        latitude,
+        longitude
+      ) => {
+        return prevLatitude === latitude && prevLongitude === longitude;
+      };
+
+      let map;
+      let prevLatitude;
+      let prevLongitude;
+      let latitude;
+      let longitude;
+      let marker; // Mover la definición del marcador aquí
+
+      function geoFindMe() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+          const updateInterval = 3000; // Actualizar cada 3 segundos
+          setInterval(() => {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          }, updateInterval);
+          function showPosition(position) {
+            prevLatitude = latitude;
+            prevLongitude = longitude;
+
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log(latitude, longitude);
+
+            if (!map) {
+              map = L.map("map").setView([latitude, longitude], 19);
+              L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                  maxZoom: 20.5,
+                  attribution:
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                }
+              ).addTo(map);
+            }
+
+            // Crear o actualizar el marcador
+            if (!marker) {
+              marker = L.marker([latitude, longitude]).addTo(map);
+            } else {
+              marker.setLatLng([latitude, longitude]);
+            }
+
+            map.setView([latitude, longitude, map.getZoom()]);
+          }
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        geoFindMe();
+      });
+    </script>
+    <div id="map" style="height: 100vh; width: 100vw"></div>
+  </body>
+</html>

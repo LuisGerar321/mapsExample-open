@@ -1,0 +1,133 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "attribution": "openrouteservice.org | OpenStreetMap contributors",
+    "service": "routing",
+    "timestamp": 1695234335729,
+    "query": {
+      "coordinates": [
+        [
+          -89.618207,
+          20.919538
+        ],
+        [
+          -89.62063271929401,
+          20.91972280572352
+        ]
+      ],
+      "profile": "driving-car",
+      "format": "json"
+    },
+    "engine": {
+      "version": "7.1.0",
+      "build_date": "2023-07-09T01:31:50Z",
+      "graph_date": "2023-09-17T10:17:18Z"
+    }
+  },
+  "bbox": [
+    -89.620628,
+    20.919433,
+    -89.618209,
+    20.919709
+  ],
+  "features": [
+    {
+      "bbox": [
+        -89.620628,
+        20.919433,
+        -89.618209,
+        20.919709
+      ],
+      "type": "Feature",
+      "properties": {
+        "transfers": 0,
+        "fare": 0,
+        "segments": [
+          {
+            "distance": 282.0,
+            "duration": 62.6,
+            "steps": [
+              {
+                "distance": 17.0,
+                "duration": 4.1,
+                "type": 11,
+                "instruction": "Head west on Calle 143",
+                "name": "Calle 143",
+                "way_points": [
+                  0,
+                  1
+                ]
+              },
+              {
+                "distance": 30.4,
+                "duration": 2.2,
+                "type": 1,
+                "instruction": "Turn right onto Calle 48",
+                "name": "Calle 48",
+                "way_points": [
+                  1,
+                  2
+                ]
+              },
+              {
+                "distance": 234.6,
+                "duration": 56.3,
+                "type": 0,
+                "instruction": "Turn left onto Calle 145",
+                "name": "Calle 145",
+                "way_points": [
+                  2,
+                  4
+                ]
+              },
+              {
+                "distance": 0.0,
+                "duration": 0.0,
+                "type": 10,
+                "instruction": "Arrive at Calle 145, on the right",
+                "name": "-",
+                "way_points": [
+                  4,
+                  4
+                ]
+              }
+            ]
+          }
+        ],
+        "way_points": [
+          0,
+          4
+        ],
+        "summary": {
+          "distance": 282.0,
+          "duration": 62.6
+        }
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            -89.618209,
+            20.919433
+          ],
+          [
+            -89.618372,
+            20.919436
+          ],
+          [
+            -89.618373,
+            20.919709
+          ],
+          [
+            -89.619746,
+            20.919626
+          ],
+          [
+            -89.620628,
+            20.9196
+          ]
+        ],
+        "type": "LineString"
+      }
+    }
+  ]
+}

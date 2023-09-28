@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <script>
+      function areCoordinatesClose(lat1, lon1, lat2, lon2, threshold = 0.0001) {
+        const earthRadiusKm = 6371; // Radio de la Tierra en kilómetros
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(deg2rad(lat1)) *
+            Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = earthRadiusKm * c;
+
+        return distance <= threshold;
+      }
+
+      function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+      }
+
+      const isDifferentPos = (
+        prevLatitude,
+        prevLongitude,
+        latitude,
+        longitude
+      ) => {
+        return prevLatitude === latitude && prevLongitude === longitude;
+      };
+      const users = [
+        {
+          name: "Parque",
+          latitude: "20.91821985835992",
+          longitude: "-89.61632362143173",
+        },
+        {
+          name: "Manuel",
+          latitude: "20.919643",
+          longitude: "-89.617920",
+        },
+        {
+          name: "Herrero",
+          latitude: "20.91939447838136",
+          longitude: "-89.61797180552334",
+        },
+        {
+          name: "Lucy",
+          latitude: "20.919630",
+          longitude: "-89.618227",
+        },
+        ,
+        {
+          name: "Oxxo",
+          latitude: "20.91972280572352",
+          longitude: "-89.62063271929401",
+        },
+        {
+          name: "Home",
+          latitude: "20.919538",
+          longitude: "-89.618207",
+        },
+      ];
+
+      const usersGeometryOxxo = {
+        coordinates: [
+          [-89.618209, 20.919433],
+          [-89.618372, 20.919436],
+          [-89.618373, 20.919709],
+          [-89.619746, 20.919626],
+          [-89.620628, 20.9196],
+        ],
+        type: "LineString",
+      };
+
+      const userGeometryParque = {
+        coordinates: [
+          [-89.618209, 20.919433],
+          [-89.618372, 20.919436],
+          [-89.618364, 20.918971],
+          [-89.618356, 20.91872],
+          [-89.61834, 20.918515],
+          [-89.61834, 20.918045],
+          [-89.617661, 20.918066],
+          [-89.616195, 20.918092],
+          [-89.616194, 20.918219],
+        ],
+        type: "LineString",
+      };
+      const users2 = [
+        {
+          name: "Parque",
+          latitude: "20.968467813274284",
+          longitude: "-89.63038145137192",
+        },
+        {
+          name: "Manuel",
+          latitude: "20.969042814309905",
+          longitude: "-89.6303281160396",
+        },
+        {
+          name: "Herrero",
+          latitude: "20.967829423707155",
+          longitude: "-89.62864562873797",
+        },
+        {
+          name: "Lucy",
+          latitude: "20.967766",
+          longitude: "-89.629116",
+        },
+        ,
+        {
+          name: "Oxxo",
+          latitude: "20.968703",
+          longitude: "-89.631186",
+        },
+        {
+          name: "Home",
+          latitude: "20.9692420267513",
+          longitude: "-89.63061418736754",
+        },
+      ];
+
+      const home = users[users.length - 1];
+      let map;
+      let prevLatitude;
+      let prevLongitude;
+      let latitude;
+      let longitude;
+
+      function geoFindMe() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+          const updateInterval = 3000; // 1 segundo
+          setInterval(() => {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          }, updateInterval);
+          function showPosition(position) {
+            prevLatitude = latitude;
+            prevLongitude = longitude;
+
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log(latitude, longitude);
+            const mapLink =
+              "https://www.openstreetmap.org/?mlat=" +
+              latitude +
+              "&mlon=" +
+              longitude +
+              "#map=18/" +
+              `${latitude}\/${longitude}`;
+
+            if (!map) {
+              map = L.map("map").setView([home.latitude, home.longitude], 19);
+            }
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              maxZoom: 20.5,
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(map);
+
+            // var circle = L.circle([home.latitude, home.longitude], {
+            //   color: "red",
+            //   fillColor: "#f03",
+            //   fillOpacity: 0.5,
+            //   radius: 40,
+            // }).addTo(map);
+
+            if (
+              areCoordinatesClose(
+                prevLatitude,
+                prevLongitude,
+                latitude,
+                longitude
+              )
+            ) {
+              console.log("Added a new one!");
+              map.setView([latitude, longitude]);
+              L.marker([latitude, longitude])
+                .addTo(map)
+                .bindPopup(
+                  `<div class="container">
+                    <div class="sub-container">
+                      <div class="avatar">
+                      <img
+                      class="avatar"
+                      src="https://cdn-icons-png.flaticon.com/512/994/994928.png"
+                      alt="Home"
+                    />
+                  </div>
+                  <h1>${"Luis"}</h1>
+                </div>
+
+                <div>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat
+                  voluptas delectus.
+                  </div>
+                </div>`
+                );
+            }
+            // users.forEach((user) => {
+            //   L.marker([user.latitude, user.longitude])
+            //     .addTo(map)
+            //     .bindPopup(
+            //       `<div class="container">
+            //         <div class="sub-container">
+            //           <div class="avatar">
+            //           <img
+            //           class="avatar"
+            //           src="https://cdn-icons-png.flaticon.com/512/994/994928.png"
+            //           alt="Home"
+            //         />
+            //       </div>
+            //       <h1>${user.name}</h1>
+            //     </div>
+
+            //     <div>
+            //       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugiat
+            //       voluptas delectus.
+            //       </div>
+            //     </div>`
+            //     );
+            //   // .openPopup();
+            // });
+
+            L.geoJSON(usersGeometryOxxo, {
+              style: {
+                color: "blue", // Puedes personalizar el color de la línea
+                weight: 4, // Puedes personalizar el grosor de la línea
+                opacity: 1,
+                fillOpacity: 0.8,
+              },
+            }).addTo(map);
+
+            L.geoJSON(userGeometryParque, {
+              style: {
+                color: "red", // Puedes personalizar el color de la línea
+                weight: 4, // Puedes personalizar el grosor de la línea
+              },
+            }).addTo(map);
+
+            console.log(mapLink); // Mueve el console.log aquí
+          }
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        geoFindMe();
+      });
+    </script>
+    <div id="map" style="height: 100vh; width: 100vw"></div>
+  </body>
+</html>
