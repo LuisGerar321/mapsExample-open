@@ -18,32 +18,6 @@
       .info-container {
         font-size: 30px; /* Tamaño de fuente deseado */
       }
-
-      /* Estilos CSS para el icono personalizado */
-      .arrow-icon {
-        display: inline-block;
-        background: transparent;
-        border: none;
-      }
-
-      .arrow {
-        width: 0;
-        height: 0;
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 30px solid red; /* Puedes cambiar el color de la flecha */
-        transform-origin: center bottom;
-        animation: rotate 2s infinite linear;
-      }
-
-      /* @keyframes rotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      } */
     </style>
   </head>
   <body>
@@ -68,27 +42,19 @@
       if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", handleOrientation);
       }
-
-      // Define un icono personalizado para el marcador con una flecha.
-      const arrowIcon = L.divIcon({
-        className: "arrow-icon",
-        iconSize: [30, 30], // Tamaño del icono
-        iconAnchor: [15, 15], // Punto de anclaje del icono (centro)
-        html: '<div class="arrow"></div>', // HTML personalizado para el icono
-      });
+      // }
 
       function handleOrientation(event) {
         // Obtén la orientación del usuario en grados.
         userOrientation = event.alpha || 0;
 
         // Asegúrate de que la orientación esté en el rango 0-360 grados.
-        userOrientation = (userOrientation + 360) % 360;
+        userOrientation = 120.0 ?? (userOrientation + 360) % 360;
 
         // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
 
-        // Rotar el icono del marcador en función de la orientación del usuario
         if (marker) {
           const icon = marker.getIcon();
           icon.options.rotationAngle = userOrientation;
@@ -99,7 +65,7 @@
       function showPosition(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-
+        console.log("lat: ", latitude, "long: ", longitude);
         // Actualiza la latitud y longitud en los spans correspondientes.
         document.getElementById("lat-span").textContent = latitude;
         document.getElementById("long-span").textContent = longitude;
@@ -113,14 +79,18 @@
           }).addTo(map);
         }
 
-        // Crear o actualizar el marcador con el icono personalizado
+        // Crear o actualizar el marcador
         if (!marker) {
-          marker = L.marker([latitude, longitude], { icon: arrowIcon }).addTo(
-            map
-          );
+          marker = L.marker([latitude, longitude]).addTo(map);
         } else {
           marker.setLatLng([latitude, longitude]);
-          marker.setIcon(arrowIcon);
+        }
+
+        // Rotar el icono del marcador en función de la orientación del usuario
+        if (marker) {
+          const icon = marker.getIcon();
+          icon.options.rotationAngle = userOrientation;
+          marker.setIcon(icon);
         }
 
         // Centrar el mapa en la nueva ubicación del marcador
