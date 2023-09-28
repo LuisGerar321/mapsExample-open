@@ -16,48 +16,43 @@
 
     <style>
       .info-container {
-        font-size: 30px; /* Tamaño de fuente deseado */
+        font-size: 30px;
       }
       .custom-marker-icon {
         transform-origin: center center;
       }
 
-      .arrow {
-        margin: 0;
-        padding: 0;
-        height: 100px;
-        width: 100px;
-        transform: rotate(
-          0deg
-        ); /* Cambia 45deg al ángulo de rotación deseado */
+      .user-circle {
+        width: 125px;
+        height: 125px;
+        background: rgba(76, 173, 237, 0.387);
+        transform: rotate(0deg);
+        display: flex;
+        align-items: flex-end;
+        border-radius: 100% 100% 100% 100%;
       }
 
       .user-box {
         width: 50px;
-        height: 50px;
-        /* border: 2px solid #948e8e; */
-        background: rgba(211, 210, 115, 0.579);
+        height: 100px;
+        background: rgba(211, 209, 115, 0.058);
         transform: rotate(0deg);
-        /* position: relative; */
-        /* border-radius: 100% 100% 0% 0%; */
+        display: flex;
+        align-items: flex-end;
       }
 
       .user-view {
-        /* /* margin: 0; */
         padding: 0;
         width: 0;
         height: 0;
         border-left: 25px solid transparent;
         border-right: 25px solid transparent;
-        border-bottom: 50px solid rgba(212, 28, 28, 0.7); /* Cambia el color de fondo y ajusta el tamaño según sea necesario */
+        border-bottom: 50px solid rgba(212, 28, 28, 0.7);
         background-image: linear-gradient(
           to top,
           rgba(255, 14, 14, 0.668),
           transparent
         );
-        /* transform-origin: center bottom;
-        position: relative;
-        position: absolute; */
       }
     </style>
   </head>
@@ -67,14 +62,25 @@
       <h2>Información de Ubicación y Orientación:</h2>
       <p>Latitud: <span id="lat-span">---</span></p>
       <p>Longitud: <span id="long-span">---</span></p>
-      <p>Orientación: <span id="orientation-span">---</span> grados</p>
+      <p>Orientación: <span id="orientation-span">0.00</span> grados</p>
+      <input
+        type="range"
+        id="orientation-slider"
+        min="0"
+        max="360"
+        step="1"
+        value="0"
+        onchange="updateOrientation(this.value)"
+      />
     </div>
     <script>
       let map;
       let marker;
       let marker2;
       let arrowIcon;
-      let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
+      let userOrientation = 0;
+      let latitude;
+      let longitude;
 
       function geoFindMe() {
         if (navigator.geolocation) {
@@ -87,39 +93,28 @@
       }
 
       function handleOrientation(event) {
-        // Obtén la orientación del usuario en grados.
         userOrientation = event.alpha || 0;
-
-        // Obtén la orientación del usuario en grados.
-        // Asegúrate de que la orientación esté en el rango 0-360 grados.
         userOrientation = (userOrientation + 360) % 360;
-
-        // Invierte la orientación para compensar la dirección del giroscopio.
         userOrientation = userOrientation % 360;
-        // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
 
-        // userOrientation = -270;
         const transformValue = `rotate(${userOrientation * -1}deg)`;
-        // Antes de actualizar el icono, crea un nuevo icono con la transformación actualizada.
         const updatedArrowIcon = L.divIcon({
           className: "custom-marker-icon",
-          html: `<div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`,
-          iconAnchor: [25, 0],
+          html: `<div class="user-box" style="transform: ${transformValue} "><div class="user-view"></div></div>`,
+          iconAnchor: [25, 50],
         });
 
-        // Establece el nuevo icono en el marcador.
         marker.setIcon(updatedArrowIcon);
       }
 
       function showPosition(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        console.log("lat: ", latitude, "long: ", longitude);
-        // Actualiza la latitud y longitud en los spans correspondientes.
-        document.getElementById("lat-span").textContent = latitude;
-        document.getElementById("long-span").textContent = longitude;
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+
+        document.getElementById("lat-span").textContent = latitude.toFixed(6);
+        document.getElementById("long-span").textContent = longitude.toFixed(6);
 
         if (!map) {
           map = L.map("map").setView([latitude, longitude], 19);
@@ -130,27 +125,54 @@
           }).addTo(map);
         }
 
-        // Crear o actualizar el marcador
         if (!marker) {
           arrowIcon = L.divIcon({
             className: "custom-marker-icon",
-            html: "<div class = user-box > <div class = user-view></div>   </div>", // Reemplaza 'flecha.png' con la ruta de tu imagen de flecha
-            iconAnchor: [25, 0],
+            html: `<div class="user-box"><div class="user-view"></div></div>`,
+            iconAnchor: [25, 50],
           });
           marker = L.marker([latitude, longitude], {
             icon: arrowIcon,
           }).addTo(map);
 
-          marker2 = L.marker([latitude, longitude], {}).addTo(map);
+          arrowIcon2 = L.divIcon({
+            className: "custom-marker-icon",
+            html: `<div class="user-circle"></div>`,
+            iconAnchor: [60, 60],
+          });
+
+          marker2 = L.marker([latitude, longitude], { icon: arrowIcon2 }).addTo(
+            map
+          );
+
+          marker3 = L.marker([latitude, longitude]).addTo(map);
         } else {
           marker.setLatLng([latitude, longitude]);
-
-          // Actualiza la posición del marker2.
           marker2.setLatLng([latitude, longitude]);
         }
 
-        // Centrar el mapa en la nueva ubicación del marcador
         map.setView([latitude, longitude]);
+      }
+
+      function updateOrientation(value) {
+        userOrientation = parseFloat(value);
+        document.getElementById("orientation-span").textContent =
+          userOrientation.toFixed(2);
+
+        const transformValue = `rotate(${userOrientation * -1}deg)`;
+        const updatedArrowIcon = L.divIcon({
+          className: "custom-marker-icon",
+          html: ` <div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`,
+          iconAnchor: [25, 50],
+        });
+        const updatedArrowIcon2 = L.divIcon({
+          className: "custom-marker-icon",
+          html: `<div class="user-circle"></div> `,
+          iconAnchor: [60, 60],
+        });
+
+        marker.setIcon(updatedArrowIcon);
+        marker2.setIcon(updatedArrowIcon2);
       }
 
       document.addEventListener("DOMContentLoaded", function () {
