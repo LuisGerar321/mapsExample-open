@@ -92,7 +92,7 @@
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
 
-        const transformValue = `rotate(${userOrientation}deg)`;
+        const transformValue = `rotate(${userOrientation - 225}deg)`;
 
         // Antes de actualizar el icono, crea un nuevo icono con la transformación actualizada.
         const updatedArrowIcon = L.divIcon({
