@@ -32,27 +32,14 @@
         ); /* Cambia 45deg al ángulo de rotación deseado */
       }
 
-      .user-box {
+      .cuarto-circulo {
         width: 100px;
         height: 100px;
-        /* border: 2px solid #948e8e; */
-        /* background: rgba(143, 149, 143, 0.7); */
-        transform: rotate(135deg);
-        position: relative;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-      }
-
-      .user-view {
-        margin: 0;
-        padding: 0;
-        width: 50%;
-        height: 50%;
-        border: 2px solid #948e8e;
-        background: rgba(17, 129, 17, 0.7);
-        border-radius: 100% 0 0 0; /* Aplicar un radio solo al primer cuadrante */
-        position: absolute;
+        border: 2px solid #555;
+        background: #5cb85c;
+        -moz-border-radius: 0 100% 0 0;
+        /* -webkit-border-radius: 0 100% 0 0; */
+        /* border-radius: 0 100% 0 0; */
       }
     </style>
   </head>
@@ -68,7 +55,7 @@
       let map;
       let marker;
       let marker2;
-      let arrowIcon;
+
       let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
 
       function geoFindMe() {
@@ -92,14 +79,6 @@
         // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
-
-        const transformValue = `rotate(${userOrientation - 135}deg)`;
-
-        // Actualiza el estilo de arrowIcon.html con la nueva transformación.
-        if (arrowIcon) {
-          arrowIcon.options.html = `<div class="user-box" style="transform: ${transformValue};"><div class="user-view"></div></div>`;
-          marker.update();
-        }
       }
 
       function showPosition(position) {
@@ -121,9 +100,9 @@
 
         // Crear o actualizar el marcador
         if (!marker) {
-          arrowIcon = L.divIcon({
+          const arrowIcon = L.divIcon({
             className: "custom-marker-icon",
-            html: "<div class = user-box > <div class = user-view></div>   </div>", // Reemplaza 'flecha.png' con la ruta de tu imagen de flecha
+            html: "<div class = cuarto-circulo > </div>", // Reemplaza 'flecha.png' con la ruta de tu imagen de flecha
             iconAnchor: [50, 50],
           });
           marker = L.marker([latitude, longitude], {
@@ -133,7 +112,6 @@
           marker2 = L.marker([latitude, longitude], {}).addTo(map);
         } else {
           marker.setLatLng([latitude, longitude]);
-          marker.update();
           marker2.setLatLng([latitude, longitude]);
         }
 
