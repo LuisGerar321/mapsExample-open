@@ -22,19 +22,20 @@
       <p>Longitud: <span id="long-span">---</span></p>
       <p>Orientación: <span id="orientation-span">---</span> grados</p>
     </div>
+    <button id="update-location-btn">Actualizar Ubicación</button>
     <script>
       let map;
       let marker;
       let userOrientation = 0; // Inicialmente, la orientación es 0 grados.
 
       function geoFindMe() {
-        if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
-        }
-
         if (window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", handleOrientation);
         }
+
+        document
+          .getElementById("update-location-btn")
+          .addEventListener("click", updateLocation);
       }
 
       function handleOrientation(event) {
@@ -47,6 +48,12 @@
         // Actualiza la orientación en el span correspondiente.
         document.getElementById("orientation-span").textContent =
           userOrientation.toFixed(2);
+      }
+
+      function updateLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
       }
 
       function showPosition(position) {
